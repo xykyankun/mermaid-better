@@ -1,0 +1,5 @@
+// UI Components
+export * from './ui';
+
+// Error Boundary
+export { ErrorBoundary } from './error-boundary';

@@ -1,0 +1,43 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Change this to your project name
+  "name": "my-neon-app",
+  "main": ".open-next/worker.js",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {},
+  "env": {
+    // Staging/Test environment
+    "test": {
+      "name": "my-neon-app-test",
+      "routes": [
+        {
+          // Replace with your test domain
+          "pattern": "test.your-domain.com/*",
+          "zone_name": "your-domain.com"
+        }
+      ],
+      "vars": {}
+    },
+    // Production environment
+    "prod": {
+      "name": "my-neon-app",
+      "routes": [
+        {
+          // Replace with your production domain
+          "pattern": "app.your-domain.com/*",
+          "zone_name": "your-domain.com"
+        }
+      ],
+      "vars": {}
+    }
+  }
+}
+
