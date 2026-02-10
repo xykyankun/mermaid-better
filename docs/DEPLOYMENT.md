@@ -1,207 +1,271 @@
-# Mermaid Better - Cloudflare Pages 部署指南
+# Mermaid Better 部署指南
 
-## ✅ 生产构建成功!
-
-项目已成功通过 Next.js 生产构建,准备部署到 Cloudflare Pages。
+本指南提供 Cloudflare Workers 和 Cloudflare Pages 两种部署方式。
 
 ---
 
-## 📦 构建产物
+## 🚀 方式 1: Cloudflare Workers (推荐)
 
-```
-Route (app)                                 Size     First Load JS
-┌ ○ /                                    4.88 kB         203 kB
-├ ○ /dashboard                           7.79 kB         206 kB
-├ ○ /editor                              14.4 kB         362 kB
-├ ○ /login                               4.01 kB         206 kB
-├ ○ /register                            4.49 kB         206 kB
-└ ○ /templates                           3.68 kB         259 kB
+适合需要更多控制和灵活性的场景。
 
-Total First Load JS shared by all           103 kB
-```
+### 前置条件
 
----
+- 已安装 pnpm
+- Cloudflare 账号
+- 已配置 `.env` 文件
 
-## 🚀 Cloudflare Pages 部署步骤
-
-### 方式 1: 通过 Cloudflare Dashboard (推荐)
-
-1. **准备 Git 仓库**
-   ```bash
-   cd /home/wukong/project/mermaid-better
-   git init
-   git add .
-   git commit -m "Initial commit - Mermaid Better with Phase 7 features
-
-Generated with [Claude Code](https://claude.ai/code)
-via [Happy](https://happy.engineering)
-
-Co-Authored-By: Claude <noreply@anthropic.com>
-Co-Authored-By: Happy <yesreply@happy.engineering>"
-
-   # 推送到 GitHub/GitLab
-   git remote add origin YOUR_GIT_REPO_URL
-   git branch -M main
-   git push -u origin main
-   ```
-
-2. **在 Cloudflare Pages 创建项目**
-   - 访问: https://dash.cloudflare.com/pages
-   - 点击 "Create a project"
-   - 选择 "Connect to Git"
-   - 授权并选择你的仓库
-
-3. **配置构建设置**
-   ```
-   Build command:     npm run build
-   Build output directory:  .next
-   Root directory:    (留空)
-   Node.js version:   22.x
-   ```
-
-4. **设置环境变量**
-   在 Cloudflare Pages 项目设置中添加:
-   ```
-   NEXT_PUBLIC_NEON_AUTH_URL=https://ep-proud-frost-ahbfb663.neonauth.c-3.us-east-1.aws.neon.tech/neondb/auth
-   NEXT_PUBLIC_NEON_DATA_API_URL=https://ep-proud-frost-ahbfb663.apirest.c-3.us-east-1.aws.neon.tech/neondb/rest/v1
-   DATABASE_URL=postgresql://neondb_owner:npg_bIdOlsSe2K5E@ep-proud-frost-ahbfb663-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-   NEXT_PUBLIC_APP_URL=https://your-project.pages.dev
-   ```
-
-5. **部署**
-   - 点击 "Save and Deploy"
-   - 等待构建完成 (~2-3 分钟)
-   - 访问提供的 URL
-
----
-
-### 方式 2: 使用 Wrangler CLI
+### 步骤 1: 登录 Cloudflare
 
 ```bash
-# 1. 安装 Wrangler (如果还没有)
-npm install -g wrangler
+npx wrangler login
+```
 
-# 2. 登录 Cloudflare
-wrangler login
+### 步骤 2: 构建 Workers 版本
 
-# 3. 构建项目
-npm run build
+```bash
+pnpm run build:worker
+```
 
-# 4. 部署
-wrangler pages deploy .next --project-name=mermaid-better
+这会生成 `.open-next/` 目录，包含 Worker 运行所需的所有文件。
 
-# 或使用配置文件
-npm run deploy:worker
+### 步骤 3: 配置环境变量
+
+使用 wrangler secrets 添加敏感信息：
+
+```bash
+# 数据库连接字符串
+npx wrangler secret put DATABASE_URL
+# 粘贴你的 DATABASE_URL (必须使用 pooler 连接)
+
+# 应用 URL
+npx wrangler secret put NEXT_PUBLIC_APP_URL
+# 输入: https://mermaid-better.<your-subdomain>.workers.dev
+```
+
+**注意**: 公开的环境变量（`NEXT_PUBLIC_NEON_AUTH_URL` 等）已在 `wrangler.jsonc` 中配置。
+
+### 步骤 4: 部署
+
+```bash
+pnpm run deploy:worker
+```
+
+部署成功后会显示你的 Workers URL。
+
+### 本地预览
+
+部署前可以本地测试：
+
+```bash
+pnpm run preview:worker
+```
+
+访问 http://localhost:8771
+
+### 自定义域名
+
+1. 进入 Cloudflare Dashboard
+2. 选择 Workers 项目 → Settings → Triggers → Custom Domains
+3. 添加你的域名（如 `app.yourdomain.com`）
+4. Cloudflare 自动配置 DNS
+
+### 查看日志
+
+```bash
+# 实时日志
+npx wrangler tail
+
+# 部署列表
+npx wrangler deployments list
+
+# Secrets 列表
+npx wrangler secret list
 ```
 
 ---
 
-## ⚙️ 已修复的类型问题
+## 📄 方式 2: Cloudflare Pages
 
-在构建过程中修复了以下TypeScript类型错误:
+适合简单部署和自动 CI/CD 的场景。
 
-1. ✅ `scripts/check-templates.ts` - DATABASE_URL 类型断言
-2. ✅ `scripts/seed-templates.ts` - DATABASE_URL 类型断言
-3. ✅ `src/app/dashboard/page.tsx` - Date 转 string
-4. ✅ `src/lib/neon/schema.ts` - RLS policy SQL 包装
-5. ✅ `src/utils/export-utils.ts` - SVGGraphicsElement 类型转换
-6. ✅ `src/app/editor/page.tsx` - useSearchParams Suspense 包装
+### 步骤 1: 推送代码到 GitHub
 
----
-
-## 🔧 配置文件
-
-### `wrangler.jsonc`
-```json
-{
-  "name": "mermaid-better",
-  "main": ".open-next/worker.js",
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
-  "compatibility_date": "2025-01-01",
-  "compatibility_flags": ["nodejs_compat"]
-}
+```bash
+git push origin main
 ```
 
-### `open-next.config.ts`
-```typescript
-import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+### 步骤 2: 连接到 Cloudflare Pages
 
-export default defineCloudflareConfig({});
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. 进入 **Workers & Pages** → **Create application** → **Pages**
+3. 连接你的 GitHub 仓库
+
+### 步骤 3: 配置构建设置
+
+```
+Framework preset: Next.js
+Build command: pnpm run build
+Build output directory: .next
+Root directory: /
+```
+
+### 步骤 4: 添加环境变量
+
+在 **Settings** → **Environment variables** 中添加：
+
+| 变量名 | 值 | 环境 |
+|--------|-----|------|
+| `DATABASE_URL` | `postgresql://...@...-pooler.neon.tech/...` | Production, Preview |
+| `NEXT_PUBLIC_NEON_AUTH_URL` | `https://...neonauth...` | Production, Preview |
+| `NEXT_PUBLIC_NEON_DATA_API_URL` | `https://...apirest...` | Production, Preview |
+| `NEXT_PUBLIC_APP_URL` | `https://mermaid-better.pages.dev` | Production |
+| `NODE_VERSION` | `22` | Production, Preview |
+
+### 步骤 5: 部署
+
+保存配置后，Cloudflare Pages 会自动触发构建和部署。
+
+每次推送到 GitHub，都会自动重新部署。
+
+---
+
+## 🔄 更新部署
+
+### Workers 更新
+
+```bash
+pnpm run build:worker
+pnpm run deploy:worker
+```
+
+### Pages 更新
+
+```bash
+git push origin main
+# Cloudflare Pages 自动部署
 ```
 
 ---
 
-## 📊 部署后检查清单
+## ⚠️ 重要提示
 
-- [ ] 网站可访问
-- [ ] 登录/注册功能正常
-- [ ] 编辑器加载正常
-- [ ] Mermaid 图表渲染正常
-- [ ] 导出功能 (SVG/PNG/PDF) 工作
-- [ ] 键盘快捷键响应
-- [ ] 撤销/重做功能正常
-- [ ] Dashboard 搜索/过滤工作
-- [ ] 模板库加载
-- [ ] 分享功能正常
+### 数据库连接
+
+**必须使用 Neon Pooler 连接字符串：**
+
+✅ 正确: `postgresql://...@ep-xxx-pooler.c-3.us-east-1.aws.neon.tech/...`
+
+❌ 错误: `postgresql://...@ep-xxx.c-3.us-east-1.aws.neon.tech/...` (缺少 `-pooler`)
+
+### 环境变量区别
+
+**Workers:**
+- Secrets: 敏感信息（DATABASE_URL），加密存储
+- Vars: 公开信息（NEXT_PUBLIC_*），在 wrangler.jsonc 中配置
+
+**Pages:**
+- 所有环境变量在 Dashboard 中统一配置
+
+### `.dev.vars` 文件
+
+- 仅用于本地 Workers 开发
+- 已加入 `.gitignore`，不会提交
+- 生产环境不使用
 
 ---
 
-## 🌐 Cloudflare Pages 优势
+## 🐛 故障排查
 
-✅ **全球 CDN** - 自动在全球边缘节点分发
-✅ **免费 SSL** - 自动 HTTPS 证书
-✅ **无限带宽** - 免费计划无带宽限制
-✅ **Git 集成** - 推送即部署
-✅ **预览部署** - 每个 PR 都有预览环境
-✅ **快速构建** - 平均构建时间 2-3 分钟
+### 问题: DATABASE_URL 错误
+
+**Workers:**
+- 检查是否使用 `npx wrangler secret put DATABASE_URL` 添加
+- 运行 `npx wrangler secret list` 查看已有 secrets
+
+**Pages:**
+- 检查 Settings → Environment variables 中是否正确配置
+- 确保环境选择了 Production 和 Preview
+
+### 问题: 构建失败
+
+1. 检查 Node 版本（需要 22+）
+2. 本地测试构建：
+   ```bash
+   pnpm run build:worker  # Workers
+   pnpm run build         # Pages
+   ```
+3. 查看详细日志：
+   ```bash
+   npx wrangler deploy --verbose  # Workers
+   # Pages: 在 Dashboard 查看 Build logs
+   ```
+
+### 问题: 如何更新环境变量？
+
+**Workers:**
+```bash
+npx wrangler secret put <SECRET_NAME>  # 覆盖旧值
+```
+
+**Pages:**
+在 Dashboard → Settings → Environment variables 中修改
 
 ---
 
-## 🔗 有用的链接
+## 📚 命令速查
 
+### Workers 命令
+
+```bash
+# 开发
+pnpm run dev:worker          # 开发模式
+pnpm run preview:worker      # 预览模式
+
+# 构建和部署
+pnpm run build:worker        # 构建
+pnpm run deploy:worker       # 部署
+
+# Wrangler 工具
+npx wrangler login           # 登录
+npx wrangler logout          # 登出
+npx wrangler tail            # 查看日志
+npx wrangler secret put      # 添加 secret
+npx wrangler secret list     # 列出 secrets
+```
+
+### Pages 命令
+
+```bash
+# 标准 Next.js 构建
+pnpm run build               # 构建
+pnpm run start               # 本地启动生产版本
+
+# 部署
+git push origin main         # 推送触发自动部署
+```
+
+---
+
+## 🔗 相关资源
+
+- [Cloudflare Workers 文档](https://developers.cloudflare.com/workers/)
 - [Cloudflare Pages 文档](https://developers.cloudflare.com/pages/)
 - [Next.js on Cloudflare](https://developers.cloudflare.com/pages/framework-guides/nextjs/)
-- [OpenNext Cloudflare](https://github.com/opennextjs/opennextjs-cloudflare)
-- [Neon Serverless Driver](https://neon.tech/docs/serverless/serverless-driver)
+- [Neon PostgreSQL 文档](https://neon.tech/docs/)
+- [OpenNext Cloudflare](https://opennext.js.org/cloudflare)
 
 ---
 
-## 🆘 故障排除
+## 💡 选择建议
 
-### 构建失败
-```bash
-# 清理并重建
-rm -rf .next node_modules
-npm install
-npm run build
-```
+**选择 Workers 如果:**
+- 需要更精细的控制
+- 需要使用 Workers 特有功能
+- 希望手动控制部署时机
 
-### 环境变量问题
-确保在 Cloudflare Pages 设置中添加了所有必需的环境变量
+**选择 Pages 如果:**
+- 喜欢自动 CI/CD
+- 配置更简单
+- 与 Git 工作流集成更好
 
-### 数据库连接问题
-确保 DATABASE_URL 使用 pooler 连接字符串 (包含 `-pooler`)
-
----
-
-## 📝 注意事项
-
-1. **首次部署**可能需要 5-10 分钟完成 DNS 传播
-2. **自定义域名**需要在 Cloudflare Pages 设置中配置
-3. **环境变量更改**后需要重新部署
-4. **数据库迁移**需要在部署前完成:
-   ```bash
-   npm run db:push
-   npx tsx scripts/seed-templates.ts
-   ```
-
----
-
-Generated with [Claude Code](https://claude.ai/code)
-via [Happy](https://happy.engineering)
-
-Co-Authored-By: Claude <noreply@anthropic.com>
-Co-Authored-By: Happy <yesreply@happy.engineering>
+两种方式性能相同，都运行在 Cloudflare 边缘网络上。

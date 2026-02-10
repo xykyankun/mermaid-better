@@ -76,8 +76,7 @@ mermaid-better/
 │   └── seed-templates.ts
 ├── tests/               # 测试文件
 ├── docs/                # 项目文档
-│   ├── CLOUDFLARE_WORKERS_DEPLOYMENT.md
-│   └── DEPLOYMENT.md
+│   └── DEPLOYMENT.md    # 部署指南
 ├── drizzle/             # Drizzle 迁移文件
 ├── .env                 # 环境变量（本地）
 ├── .dev.vars            # Wrangler 环境变量（本地）
@@ -192,7 +191,7 @@ npx wrangler secret put NEXT_PUBLIC_APP_URL
 pnpm run deploy:worker
 ```
 
-详细步骤见 [docs/CLOUDFLARE_WORKERS_DEPLOYMENT.md](docs/CLOUDFLARE_WORKERS_DEPLOYMENT.md)
+详细步骤见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 
 ### 方式 2: Cloudflare Pages
 
@@ -316,8 +315,7 @@ pnpm format:check     # 检查格式
 
 ## 📚 文档
 
-- [Cloudflare Workers 部署指南](docs/CLOUDFLARE_WORKERS_DEPLOYMENT.md)
-- [Cloudflare Pages 部署指南](docs/DEPLOYMENT.md)
+- [部署指南](docs/DEPLOYMENT.md) - Cloudflare Workers 和 Pages 部署
 
 ## 🤝 贡献
 
