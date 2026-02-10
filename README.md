@@ -1,279 +1,347 @@
 # Mermaid Better
 
-> 🎨 The easiest way to create, manage, and share Mermaid diagrams
+> 🎨 在线 Mermaid 图表编辑器 - 实时预览、云端存储、协作分享
 
-A full-featured web application for creating and managing Mermaid diagrams with real-time preview, cloud storage, and powerful export options.
+一个功能完整的 Mermaid 图表在线编辑器，支持实时预览、云端保存和多格式导出。
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
 [![Neon](https://img.shields.io/badge/Neon-PostgreSQL-green)](https://neon.tech/)
 [![Mermaid](https://img.shields.io/badge/Mermaid-11-ff3670)](https://mermaid.js.org/)
 
-## ✨ Features
+## ✨ 功能特性
 
-### 🎯 Current Features (Phase 1 - MVP)
+### 核心功能
+- 🎨 **实时编辑器** - Monaco Editor 支持，语法高亮和自动补全
+- 👁️ **实时预览** - 即时渲染 Mermaid 图表
+- 💾 **云端保存** - 自动保存到 Neon PostgreSQL 数据库
+- 📑 **模板库** - 内置多种图表模板（流程图、序列图、类图等）
+- 🔗 **分享功能** - 生成分享链接，支持公开/私密模式
+- 📊 **Dashboard** - 管理所有图表，支持搜索和筛选
 
-- ✅ **Real-time Mermaid Editor** with Monaco Editor integration
-- ✅ **Live Preview** - See your diagrams update as you type
-- ✅ **Cloud Storage** - Save diagrams securely with Neon PostgreSQL
-- ✅ **Export** - Download as PNG, SVG, or copy code
-- ✅ **User Authentication** - Secure login with Neon Auth
-- ✅ **Diagram Management** - Create, edit, delete, and organize diagrams
-- ✅ **All Diagram Types** - Flowcharts, sequence, class, ER, Gantt, and more
-- ✅ **Responsive Design** - Works on desktop and mobile
+### 增强功能
+- ⌨️ **键盘快捷键** - 保存、导出、新建等快捷操作（Ctrl+S、Ctrl+E、Ctrl+N）
+- 📤 **多格式导出** - 支持 PNG、SVG、PDF 格式
+- 🔍 **搜索过滤** - 快速查找图表
+- ↩️ **撤销/重做** - 编辑历史管理（Ctrl+Z / Ctrl+Y）
 
-### 🎨 Supported Diagram Types
+### 用户认证
+- 🔐 **Neon Auth** - 安全的用户认证系统
+- 👤 **用户管理** - 注册、登录、退出登录
 
-- Flowcharts
-- Sequence Diagrams
-- Class Diagrams
-- ER Diagrams
-- Gantt Charts
-- Pie Charts
-- User Journey Maps
-- Mind Maps
-- Git Graphs
+### 支持的图表类型
+- 流程图 (Flowcharts)
+- 序列图 (Sequence Diagrams)
+- 类图 (Class Diagrams)
+- ER 图 (ER Diagrams)
+- 甘特图 (Gantt Charts)
+- 饼图 (Pie Charts)
+- 用户旅程图 (User Journey)
+- 思维导图 (Mind Maps)
+- Git 图 (Git Graphs)
 
-## 🚀 Quick Start
+## 🏗️ 技术栈
 
-### Prerequisites
+| 分类 | 技术 |
+|------|------|
+| **框架** | Next.js 15.5.10 (App Router) |
+| **语言** | TypeScript 5.5 |
+| **数据库** | Neon PostgreSQL (Serverless) |
+| **ORM** | Drizzle ORM |
+| **认证** | Neon Auth (Better Auth) |
+| **编辑器** | Monaco Editor |
+| **图表** | Mermaid.js 11 |
+| **样式** | Tailwind CSS |
+| **部署** | Cloudflare Workers / Pages |
 
-- Node.js 18+
-- npm or pnpm
-- Neon Database account ([Get one free](https://neon.tech))
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd mermaid-better
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install --legacy-peer-deps
-   ```
-
-3. **Set up environment variables**
-
-   Copy `.env.example` to `.env` and fill in your Neon credentials:
-   ```bash
-   cp .env.example .env
-   ```
-
-   Get your Neon credentials from the [Neon Console](https://console.neon.tech):
-   ```env
-   NEXT_PUBLIC_NEON_AUTH_URL=https://your-project.neonauth.region.aws.neon.tech/database/auth
-   NEXT_PUBLIC_NEON_DATA_API_URL=https://your-project.apirest.region.aws.neon.tech/database/rest/v1
-   DATABASE_URL=postgresql://user:password@your-project-pooler.region.aws.neon.tech/database?sslmode=require
-   NEXT_PUBLIC_APP_URL=http://localhost:3000
-   ```
-
-4. **Set up database**
-   ```bash
-   npm run db:generate
-   npm run db:migrate
-   ```
-
-5. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-6. **Open your browser**
-
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 📖 Usage
-
-### Creating Your First Diagram
-
-1. **Sign up** for an account on the homepage
-2. Click **"New Diagram"** in your dashboard
-3. **Write Mermaid code** in the left editor panel
-4. **See live preview** in the right panel
-5. **Save** your diagram with a title
-
-### Example Mermaid Code
-
-```mermaid
-graph TD
-    A[Start] --> B{Is it working?}
-    B -->|Yes| C[Great!]
-    B -->|No| D[Debug]
-    D --> B
-    C --> E[End]
-```
-
-### Exporting Diagrams
-
-From the editor, you can:
-- **Export as PNG** - Perfect for documentation
-- **Export as SVG** - Scalable vector graphics
-- **Copy Code** - Use in your markdown files
-
-## 🏗️ Project Structure
+## 📁 项目结构
 
 ```
 mermaid-better/
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── page.tsx           # Landing page
-│   │   ├── editor/            # Editor page
-│   │   ├── dashboard/         # User diagrams list
-│   │   ├── login/             # Auth pages
-│   │   └── api/diagrams/      # REST API
-│   ├── components/
-│   │   ├── mermaid-editor.tsx # Main editor component
-│   │   └── ui/                # Reusable UI components
-│   └── lib/
-│       └── neon/              # Database client & schema
-├── drizzle/                   # Database migrations
-└── public/                    # Static assets
+│   ├── app/              # Next.js App Router 页面
+│   │   ├── api/          # API 路由
+│   │   ├── dashboard/    # 仪表板页面
+│   │   ├── editor/       # 编辑器页面
+│   │   ├── login/        # 登录页面
+│   │   ├── register/     # 注册页面
+│   │   ├── share/        # 分享页面
+│   │   └── templates/    # 模板页面
+│   ├── components/       # React 组件
+│   ├── lib/             # 工具库和配置
+│   │   └── neon/        # Neon 数据库配置和 schema
+│   └── utils/           # 工具函数
+├── scripts/             # 数据库脚本
+│   ├── check-templates.ts
+│   └── seed-templates.ts
+├── tests/               # 测试文件
+├── docs/                # 项目文档
+│   ├── CLOUDFLARE_WORKERS_DEPLOYMENT.md
+│   └── DEPLOYMENT.md
+├── drizzle/             # Drizzle 迁移文件
+├── .env                 # 环境变量（本地）
+├── .dev.vars            # Wrangler 环境变量（本地）
+├── drizzle.config.ts    # Drizzle 配置
+├── next.config.js       # Next.js 配置
+├── open-next.config.ts  # OpenNext Cloudflare 配置
+├── wrangler.jsonc       # Cloudflare Workers 配置
+└── package.json         # 项目依赖
 ```
 
-## 🛠️ Tech Stack
+## 🚀 快速开始
 
-| Category | Technology |
-|----------|------------|
-| **Framework** | Next.js 15 (App Router) |
-| **Language** | TypeScript 5.5 |
-| **Database** | Neon PostgreSQL |
-| **ORM** | Drizzle ORM |
-| **Auth** | Neon Auth (Better Auth) |
-| **Editor** | Monaco Editor |
-| **Diagrams** | Mermaid.js |
-| **Styling** | Tailwind CSS |
-| **Deployment** | Cloudflare Workers (OpenNext) |
+### 前置要求
 
-## 📚 API Reference
+- Node.js 22+
+- pnpm 8+
+- Neon PostgreSQL 数据库账号
+- Cloudflare 账号（部署用）
 
-### Diagrams API
+### 安装依赖
+
+```bash
+pnpm install
+```
+
+### 配置环境变量
+
+复制 `.env.example` 到 `.env` 并填入你的配置：
+
+```bash
+cp .env.example .env
+```
+
+编辑 `.env` 文件：
+
+```env
+# Neon Auth URL
+NEXT_PUBLIC_NEON_AUTH_URL=your_neon_auth_url
+
+# Neon Data API URL
+NEXT_PUBLIC_NEON_DATA_API_URL=your_neon_data_api_url
+
+# Database Connection String (with pooler)
+DATABASE_URL=postgresql://...@...-pooler.neon.tech/...
+
+# App URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 初始化数据库
+
+```bash
+# 生成 schema
+pnpm run db:generate
+
+# 推送到数据库
+pnpm run db:push
+
+# (可选) 填充模板数据
+pnpm tsx scripts/seed-templates.ts
+```
+
+### 启动开发服务器
+
+```bash
+pnpm dev
+```
+
+访问 http://localhost:3000
+
+## 📖 使用指南
+
+### 创建第一个图表
+
+1. **注册账号** - 在首页点击注册
+2. **新建图表** - Dashboard 中点击 "新建图表"
+3. **编写代码** - 左侧编辑器输入 Mermaid 代码
+4. **实时预览** - 右侧实时显示渲染结果
+5. **保存图表** - 填写标题并保存
+
+### Mermaid 代码示例
+
+```mermaid
+graph TD
+    A[开始] --> B{判断条件}
+    B -->|是| C[执行操作]
+    B -->|否| D[结束]
+    C --> D
+```
+
+### 导出图表
+
+在编辑器中可以：
+- **导出为 PNG** - 适合文档和演示
+- **导出为 SVG** - 可缩放矢量图
+- **导出为 PDF** - 适合打印
+- **复制代码** - 用于 Markdown 文件
+
+## 📦 构建和部署
+
+### 方式 1: Cloudflare Workers (推荐)
+
+```bash
+# 1. 构建 Workers 版本
+pnpm run build:worker
+
+# 2. 配置 secrets
+npx wrangler secret put DATABASE_URL
+npx wrangler secret put NEXT_PUBLIC_APP_URL
+
+# 3. 部署
+pnpm run deploy:worker
+```
+
+详细步骤见 [docs/CLOUDFLARE_WORKERS_DEPLOYMENT.md](docs/CLOUDFLARE_WORKERS_DEPLOYMENT.md)
+
+### 方式 2: Cloudflare Pages
+
+在 Cloudflare Pages Dashboard 配置：
+
+```
+Framework preset: Next.js
+Build command: pnpm run build
+Build output directory: .next
+Root directory: /
+```
+
+添加环境变量后部署。详见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+
+### 标准 Next.js 构建
+
+```bash
+pnpm run build
+pnpm start
+```
+
+## 🧪 测试
+
+```bash
+# 运行所有 UI 测试
+node tests/test-all-ui.js
+
+# 测试特定功能
+node tests/test-app.js
+node tests/test-templates.js
+node tests/test-sharing.js
+node tests/test-phase7-features.js
+```
+
+## 📝 可用命令
+
+```bash
+# 开发
+pnpm dev              # 启动开发服务器
+pnpm dev:worker       # 启动 Workers 开发服务器
+pnpm preview:worker   # 预览 Workers 构建
+
+# 构建
+pnpm build            # 标准 Next.js 构建
+pnpm build:worker     # Workers 构建
+
+# 部署
+pnpm deploy:worker    # 部署到 Cloudflare Workers
+
+# 数据库
+pnpm db:generate      # 生成 Drizzle schema
+pnpm db:push          # 推送到数据库
+pnpm db:migrate       # 运行迁移
+pnpm db:studio        # 打开 Drizzle Studio
+
+# 代码质量
+pnpm lint             # 运行 ESLint
+pnpm format           # 格式化代码 (Prettier)
+pnpm format:check     # 检查格式
+```
+
+## ⌨️ 键盘快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl/Cmd + S` | 保存图表 |
+| `Ctrl/Cmd + E` | 导出为 PNG |
+| `Ctrl/Cmd + N` | 新建图表 |
+| `Ctrl/Cmd + Z` | 撤销 |
+| `Ctrl/Cmd + Y` | 重做 |
+| `Ctrl/Cmd + Shift + Z` | 重做 (备用) |
+
+## 🗺️ API 文档
+
+### 图表 API
 
 #### `GET /api/diagrams`
-Get all diagrams for the authenticated user
+获取当前用户的所有图表
 
 #### `POST /api/diagrams`
-Create a new diagram
+创建新图表
 ```json
 {
-  "title": "My Flowchart",
+  "title": "我的流程图",
   "content": "graph TD\nA-->B",
   "type": "flowchart",
-  "description": "Optional description"
+  "description": "可选描述"
 }
 ```
 
 #### `GET /api/diagrams/:id`
-Get a specific diagram by ID
+获取指定图表
 
 #### `PATCH /api/diagrams/:id`
-Update a diagram
+更新图表
 ```json
 {
-  "title": "Updated Title",
+  "title": "更新的标题",
   "content": "graph TD\nA-->B-->C"
 }
 ```
 
 #### `DELETE /api/diagrams/:id`
-Delete a diagram
+删除图表
 
-## 🗺️ Roadmap
-
-### Phase 2 - Enhanced Experience (In Planning)
-- [ ] Code auto-completion
-- [ ] Keyboard shortcuts
-- [ ] Multi-tab editing
-- [ ] Code snippets library
-- [ ] Template marketplace
-- [ ] Folders and tags
-- [ ] Search and filtering
-
-### Phase 3 - AI Features
-- [ ] AI diagram generation from text
-- [ ] Smart layout optimization
-- [ ] Code-to-diagram conversion
-
-### Phase 4 - Collaboration
-- [ ] Real-time collaboration
-- [ ] Diagram sharing
-- [ ] Comments and feedback
-- [ ] Team workspaces
-
-### Phase 5 - Enterprise
-- [ ] API access
-- [ ] Integrations (GitHub, Notion, Confluence)
-- [ ] Custom themes
-- [ ] SSO support
-
-See [PHASE_1_COMPLETE.md](./PHASE_1_COMPLETE.md) for detailed feature list.
-
-## 🧪 Development
-
-### Available Scripts
-
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run format       # Format code with Prettier
-
-# Database
-npm run db:generate  # Generate migration files
-npm run db:migrate   # Run migrations
-npm run db:push      # Push schema directly
-npm run db:studio    # Open Drizzle Studio
-
-# Cloudflare Workers
-npm run build:worker   # Build for Cloudflare
-npm run deploy:worker  # Deploy to Cloudflare
-```
-
-### Database Schema
-
-```typescript
-// diagrams table
+#### `POST /api/diagrams/:id/share`
+生成分享链接
+```json
 {
-  id: uuid (primary key)
-  userId: text (foreign key)
-  title: varchar(255)
-  content: text (Mermaid code)
-  type: varchar(50) (flowchart, sequence, etc.)
-  description: text (optional)
-  createdAt: timestamp
-  updatedAt: timestamp
+  "isPublic": true
 }
 ```
 
-## 🤝 Contributing
+### 模板 API
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+#### `GET /api/templates`
+获取所有公开模板
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+#### `GET /api/templates/:id`
+获取指定模板
 
-## 📝 License
+## 📚 文档
 
-MIT License - see [LICENSE](LICENSE) file for details
+- [Cloudflare Workers 部署指南](docs/CLOUDFLARE_WORKERS_DEPLOYMENT.md)
+- [Cloudflare Pages 部署指南](docs/DEPLOYMENT.md)
 
-## 🙏 Acknowledgments
+## 🤝 贡献
 
-- [Mermaid.js](https://mermaid.js.org/) - Powerful diagramming library
-- [Monaco Editor](https://microsoft.github.io/monaco-editor/) - VS Code's editor
+欢迎提交 Issue 和 Pull Request！
+
+1. Fork 本仓库
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 创建 Pull Request
+
+## 📄 许可证
+
+MIT License
+
+## 🙏 致谢
+
+- [Next.js](https://nextjs.org/) - React 框架
+- [Mermaid.js](https://mermaid.js.org/) - 强大的图表库
 - [Neon](https://neon.tech/) - Serverless PostgreSQL
-- [Next.js](https://nextjs.org/) - The React Framework
+- [Cloudflare](https://www.cloudflare.com/) - 边缘计算平台
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/) - VS Code 编辑器
 - [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM
-
-## 📧 Contact
-
-For questions or support, please open an issue on GitHub.
 
 ---
 
-**Built with ❤️ using Next.js, Mermaid.js, and Neon**
+**用 ❤️ 构建 | Powered by Next.js, Mermaid.js, and Neon**

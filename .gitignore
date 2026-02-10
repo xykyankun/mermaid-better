@@ -6,6 +6,8 @@ node_modules/
 
 # Testing
 coverage/
+tests/test-screenshots-phase7/
+screenshots/
 
 # Next.js
 .next/
@@ -20,6 +22,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# Lock files (keep only pnpm-lock.yaml)
+package-lock.json
+yarn.lock
 
 # Misc
 .DS_Store
