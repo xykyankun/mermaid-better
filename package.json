@@ -1,7 +1,7 @@
 {
   "name": "neon-app-template",
   "version": "1.0.0",
-  "description": "A full-stack application template with Neon, Next.js 15, Drizzle ORM, and Cloudflare Workers",
+  "description": "Online Mermaid diagram editor with real-time preview, cloud storage, and Cloudflare Workers deployment",
   "private": true,
   "scripts": {
     "dev": "next dev",

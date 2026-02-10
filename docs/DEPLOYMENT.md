@@ -1,18 +1,16 @@
-# Mermaid Better 部署指南
+# Cloudflare Workers 部署指南
 
-本指南提供 Cloudflare Workers 和 Cloudflare Pages 两种部署方式。
+使用 Cloudflare Workers 部署 Mermaid Better 应用。
 
 ---
 
-## 🚀 方式 1: Cloudflare Workers (推荐)
-
-适合需要更多控制和灵活性的场景。
+## 🚀 部署步骤
 
 ### 前置条件
 
 - 已安装 pnpm
 - Cloudflare 账号
-- 已配置 `.env` 文件
+- 已配置本地 `.env` 文件
 
 ### 步骤 1: 登录 Cloudflare
 
@@ -20,129 +18,125 @@
 npx wrangler login
 ```
 
+浏览器会打开，完成授权登录。
+
 ### 步骤 2: 构建 Workers 版本
 
 ```bash
 pnpm run build:worker
 ```
 
-这会生成 `.open-next/` 目录，包含 Worker 运行所需的所有文件。
+这会生成 `.open-next/` 目录，包含：
+- `worker.js` - Workers 入口文件
+- `assets/` - 静态资源
+- `server-functions/` - 服务器函数
 
 ### 步骤 3: 配置环境变量
 
 使用 wrangler secrets 添加敏感信息：
 
 ```bash
-# 数据库连接字符串
+# 数据库连接字符串（必须使用 pooler）
 npx wrangler secret put DATABASE_URL
-# 粘贴你的 DATABASE_URL (必须使用 pooler 连接)
+# 粘贴: postgresql://user:pass@host-pooler.region.aws.neon.tech/db?sslmode=require
 
 # 应用 URL
 npx wrangler secret put NEXT_PUBLIC_APP_URL
 # 输入: https://mermaid-better.<your-subdomain>.workers.dev
 ```
 
-**注意**: 公开的环境变量（`NEXT_PUBLIC_NEON_AUTH_URL` 等）已在 `wrangler.jsonc` 中配置。
+**注意**: 公开的环境变量（`NEXT_PUBLIC_NEON_AUTH_URL`、`NEXT_PUBLIC_NEON_DATA_API_URL`）已在 `wrangler.jsonc` 中配置。
 
-### 步骤 4: 部署
+### 步骤 4: 部署到 Cloudflare
 
 ```bash
 pnpm run deploy:worker
 ```
 
-部署成功后会显示你的 Workers URL。
-
-### 本地预览
-
-部署前可以本地测试：
-
-```bash
-pnpm run preview:worker
+部署成功后会显示：
+```
+Published mermaid-better (X.XX sec)
+  https://mermaid-better.<your-subdomain>.workers.dev
 ```
 
-访问 http://localhost:8771
-
-### 自定义域名
-
-1. 进入 Cloudflare Dashboard
-2. 选择 Workers 项目 → Settings → Triggers → Custom Domains
-3. 添加你的域名（如 `app.yourdomain.com`）
-4. Cloudflare 自动配置 DNS
-
-### 查看日志
-
-```bash
-# 实时日志
-npx wrangler tail
-
-# 部署列表
-npx wrangler deployments list
-
-# Secrets 列表
-npx wrangler secret list
-```
-
----
-
-## 📄 方式 2: Cloudflare Pages
-
-适合简单部署和自动 CI/CD 的场景。
-
-### 步骤 1: 推送代码到 GitHub
-
-```bash
-git push origin main
-```
-
-### 步骤 2: 连接到 Cloudflare Pages
-
-1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
-2. 进入 **Workers & Pages** → **Create application** → **Pages**
-3. 连接你的 GitHub 仓库
-
-### 步骤 3: 配置构建设置
-
-```
-Framework preset: Next.js
-Build command: pnpm run build
-Build output directory: .next
-Root directory: /
-```
-
-### 步骤 4: 添加环境变量
-
-在 **Settings** → **Environment variables** 中添加：
-
-| 变量名 | 值 | 环境 |
-|--------|-----|------|
-| `DATABASE_URL` | `postgresql://...@...-pooler.neon.tech/...` | Production, Preview |
-| `NEXT_PUBLIC_NEON_AUTH_URL` | `https://...neonauth...` | Production, Preview |
-| `NEXT_PUBLIC_NEON_DATA_API_URL` | `https://...apirest...` | Production, Preview |
-| `NEXT_PUBLIC_APP_URL` | `https://mermaid-better.pages.dev` | Production |
-| `NODE_VERSION` | `22` | Production, Preview |
-
-### 步骤 5: 部署
-
-保存配置后，Cloudflare Pages 会自动触发构建和部署。
-
-每次推送到 GitHub，都会自动重新部署。
+访问这个 URL 即可使用你的应用！
 
 ---
 
 ## 🔄 更新部署
 
-### Workers 更新
+每次代码更新后：
 
 ```bash
+# 1. 重新构建
 pnpm run build:worker
+
+# 2. 重新部署
 pnpm run deploy:worker
 ```
 
-### Pages 更新
+或者合并为一条命令：
+```bash
+pnpm run build:worker && pnpm run deploy:worker
+```
+
+---
+
+## 🧪 本地测试
+
+### 开发模式
 
 ```bash
-git push origin main
-# Cloudflare Pages 自动部署
+pnpm run dev:worker
+```
+
+启动本地 Workers 开发服务器，支持热重载。访问 http://localhost:8771
+
+### 预览模式
+
+```bash
+pnpm run preview:worker
+```
+
+使用生产构建在本地预览，测试部署效果。
+
+---
+
+## 🌐 自定义域名
+
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. 进入 **Workers & Pages** → 选择你的 Worker
+3. 点击 **Settings** → **Triggers** → **Custom Domains**
+4. 点击 **Add Custom Domain**
+5. 输入你的域名（如 `app.yourdomain.com`）
+6. Cloudflare 自动配置 DNS 记录
+
+---
+
+## 📊 监控和日志
+
+### 查看实时日志
+
+```bash
+npx wrangler tail
+```
+
+### 查看部署历史
+
+```bash
+npx wrangler deployments list
+```
+
+### 查看已配置的 Secrets
+
+```bash
+npx wrangler secret list
+```
+
+### 删除 Secret
+
+```bash
+npx wrangler secret delete <SECRET_NAME>
 ```
 
 ---
@@ -153,95 +147,119 @@ git push origin main
 
 **必须使用 Neon Pooler 连接字符串：**
 
-✅ 正确: `postgresql://...@ep-xxx-pooler.c-3.us-east-1.aws.neon.tech/...`
+✅ 正确:
+```
+postgresql://user@ep-xxx-pooler.c-3.us-east-1.aws.neon.tech/db
+```
 
-❌ 错误: `postgresql://...@ep-xxx.c-3.us-east-1.aws.neon.tech/...` (缺少 `-pooler`)
+❌ 错误（缺少 `-pooler`）:
+```
+postgresql://user@ep-xxx.c-3.us-east-1.aws.neon.tech/db
+```
 
-### 环境变量区别
+Workers 运行在边缘环境，必须使用连接池来管理数据库连接。
 
-**Workers:**
-- Secrets: 敏感信息（DATABASE_URL），加密存储
-- Vars: 公开信息（NEXT_PUBLIC_*），在 wrangler.jsonc 中配置
+### 环境变量类型
 
-**Pages:**
-- 所有环境变量在 Dashboard 中统一配置
+**Secrets（加密存储）:**
+- `DATABASE_URL` - 数据库连接字符串（包含密码）
+- `NEXT_PUBLIC_APP_URL` - 应用访问 URL
+- 使用 `wrangler secret put` 添加
+- 无法读取，只能覆盖
+
+**Vars（明文存储）:**
+- `NEXT_PUBLIC_NEON_AUTH_URL` - Neon Auth URL
+- `NEXT_PUBLIC_NEON_DATA_API_URL` - Neon Data API URL
+- `NODE_VERSION` - Node 版本
+- 在 `wrangler.jsonc` 中配置
 
 ### `.dev.vars` 文件
 
-- 仅用于本地 Workers 开发
-- 已加入 `.gitignore`，不会提交
-- 生产环境不使用
+本地开发环境变量文件：
+- 仅用于 `pnpm run dev:worker` 和 `pnpm run preview:worker`
+- 已添加到 `.gitignore`，不会提交到 Git
+- 生产环境使用 wrangler secrets，不使用此文件
 
 ---
 
 ## 🐛 故障排查
 
-### 问题: DATABASE_URL 错误
+### 问题: DATABASE_URL 未定义
 
-**Workers:**
-- 检查是否使用 `npx wrangler secret put DATABASE_URL` 添加
-- 运行 `npx wrangler secret list` 查看已有 secrets
-
-**Pages:**
-- 检查 Settings → Environment variables 中是否正确配置
-- 确保环境选择了 Production 和 Preview
+**检查步骤:**
+1. 运行 `npx wrangler secret list` 查看是否已添加
+2. 确认使用了 pooler 连接字符串（包含 `-pooler`）
+3. 重新添加 secret: `npx wrangler secret put DATABASE_URL`
 
 ### 问题: 构建失败
 
+**解决方法:**
 1. 检查 Node 版本（需要 22+）
-2. 本地测试构建：
    ```bash
-   pnpm run build:worker  # Workers
-   pnpm run build         # Pages
+   node -v
    ```
-3. 查看详细日志：
+2. 清理并重新安装依赖
    ```bash
-   npx wrangler deploy --verbose  # Workers
-   # Pages: 在 Dashboard 查看 Build logs
+   rm -rf node_modules .open-next
+   pnpm install
+   pnpm run build:worker
    ```
+3. 查看详细错误日志
+   ```bash
+   pnpm run build:worker --verbose
+   ```
+
+### 问题: 部署后运行时错误
+
+**检查步骤:**
+1. 查看实时日志
+   ```bash
+   npx wrangler tail
+   ```
+2. 检查所有 secrets 是否已配置
+   ```bash
+   npx wrangler secret list
+   ```
+3. 确认 `wrangler.jsonc` 中的 vars 配置正确
 
 ### 问题: 如何更新环境变量？
 
-**Workers:**
+**更新 Secret:**
 ```bash
-npx wrangler secret put <SECRET_NAME>  # 覆盖旧值
+npx wrangler secret put <SECRET_NAME>
+# 输入新值，会覆盖旧值
 ```
 
-**Pages:**
-在 Dashboard → Settings → Environment variables 中修改
+**更新 Var:**
+修改 `wrangler.jsonc` 文件中的 `vars` 对象，然后重新部署。
 
 ---
 
 ## 📚 命令速查
 
-### Workers 命令
-
 ```bash
+# 登录/登出
+npx wrangler login
+npx wrangler logout
+
 # 开发
-pnpm run dev:worker          # 开发模式
-pnpm run preview:worker      # 预览模式
+pnpm run dev:worker          # 开发模式（热重载）
+pnpm run preview:worker      # 预览模式（生产构建）
 
 # 构建和部署
-pnpm run build:worker        # 构建
-pnpm run deploy:worker       # 部署
+pnpm run build:worker        # 构建 Workers 版本
+pnpm run deploy:worker       # 部署到 Cloudflare
 
-# Wrangler 工具
-npx wrangler login           # 登录
-npx wrangler logout          # 登出
-npx wrangler tail            # 查看日志
-npx wrangler secret put      # 添加 secret
+# 监控和管理
+npx wrangler tail            # 实时日志
+npx wrangler deployments list    # 部署历史
 npx wrangler secret list     # 列出 secrets
-```
+npx wrangler secret put <NAME>   # 添加/更新 secret
+npx wrangler secret delete <NAME> # 删除 secret
 
-### Pages 命令
-
-```bash
-# 标准 Next.js 构建
-pnpm run build               # 构建
-pnpm run start               # 本地启动生产版本
-
-# 部署
-git push origin main         # 推送触发自动部署
+# 调试
+npx wrangler deploy --verbose    # 详细部署日志
+npx wrangler whoami          # 查看当前登录账号
 ```
 
 ---
@@ -249,23 +267,17 @@ git push origin main         # 推送触发自动部署
 ## 🔗 相关资源
 
 - [Cloudflare Workers 文档](https://developers.cloudflare.com/workers/)
-- [Cloudflare Pages 文档](https://developers.cloudflare.com/pages/)
-- [Next.js on Cloudflare](https://developers.cloudflare.com/pages/framework-guides/nextjs/)
-- [Neon PostgreSQL 文档](https://neon.tech/docs/)
+- [Wrangler CLI 文档](https://developers.cloudflare.com/workers/wrangler/)
 - [OpenNext Cloudflare](https://opennext.js.org/cloudflare)
+- [Neon PostgreSQL 文档](https://neon.tech/docs/)
+- [Next.js 部署文档](https://nextjs.org/docs/deployment)
 
 ---
 
-## 💡 选择建议
+## 💡 最佳实践
 
-**选择 Workers 如果:**
-- 需要更精细的控制
-- 需要使用 Workers 特有功能
-- 希望手动控制部署时机
-
-**选择 Pages 如果:**
-- 喜欢自动 CI/CD
-- 配置更简单
-- 与 Git 工作流集成更好
-
-两种方式性能相同，都运行在 Cloudflare 边缘网络上。
+1. **环境隔离**: 使用 `wrangler.jsonc` 中的 `env` 配置多个环境（dev、staging、prod）
+2. **定期备份**: 记录所有 secrets 的值（存储在安全的地方）
+3. **监控日志**: 定期查看 `wrangler tail` 输出，及时发现问题
+4. **版本控制**: 每次重大更新前，在 Dashboard 查看部署历史，便于回滚
+5. **测试先行**: 使用 `pnpm run preview:worker` 在本地充分测试后再部署

@@ -52,7 +52,7 @@
 | **编辑器** | Monaco Editor |
 | **图表** | Mermaid.js 11 |
 | **样式** | Tailwind CSS |
-| **部署** | Cloudflare Workers / Pages |
+| **部署** | Cloudflare Workers |
 
 ## 📁 项目结构
 
@@ -175,9 +175,7 @@ graph TD
 - **导出为 PDF** - 适合打印
 - **复制代码** - 用于 Markdown 文件
 
-## 📦 构建和部署
-
-### 方式 1: Cloudflare Workers (推荐)
+## 📦 部署到 Cloudflare Workers
 
 ```bash
 # 1. 构建 Workers 版本
@@ -192,26 +190,6 @@ pnpm run deploy:worker
 ```
 
 详细步骤见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-
-### 方式 2: Cloudflare Pages
-
-在 Cloudflare Pages Dashboard 配置：
-
-```
-Framework preset: Next.js
-Build command: pnpm run build
-Build output directory: .next
-Root directory: /
-```
-
-添加环境变量后部署。详见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-
-### 标准 Next.js 构建
-
-```bash
-pnpm run build
-pnpm start
-```
 
 ## 🧪 测试
 
@@ -315,7 +293,7 @@ pnpm format:check     # 检查格式
 
 ## 📚 文档
 
-- [部署指南](docs/DEPLOYMENT.md) - Cloudflare Workers 和 Pages 部署
+- [部署指南](docs/DEPLOYMENT.md) - Cloudflare Workers 部署
 
 ## 🤝 贡献
 
