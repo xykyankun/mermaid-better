@@ -20,9 +20,15 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@daveyplate/better-auth-ui": "^3.3.15",
+    "@monaco-editor/react": "^4.7.0",
     "@neondatabase/neon-js": "^0.1.0-beta.21",
     "@neondatabase/serverless": "^0.10.0",
     "drizzle-orm": "^0.38.0",
+    "html-to-image": "^1.11.13",
+    "jspdf": "^4.0.0",
+    "lucide-react": "^0.563.0",
+    "mermaid": "^11.12.2",
     "next": "^15.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -30,6 +36,7 @@
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.0.0",
+    "@playwright/test": "^1.58.0",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -38,10 +45,12 @@
     "drizzle-kit": "^0.30.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.0.0",
+    "playwright": "^1.58.0",
     "postcss": "^8.4.39",
     "prettier": "^3.2.0",
     "prettier-plugin-tailwindcss": "^0.6.0",
     "tailwindcss": "^3.4.6",
+    "tsx": "^4.21.0",
     "typescript": "^5.5.3",
     "wrangler": "^4.0.0"
   }

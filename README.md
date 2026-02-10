@@ -1,253 +1,279 @@
-# Neon App Template
+# Mermaid Better
 
-A production-ready full-stack application template built with **Neon**, **Next.js 15**, **Drizzle ORM**, and **Tailwind CSS**. Supports deployment to **Cloudflare Workers** via OpenNext.
+> 🎨 The easiest way to create, manage, and share Mermaid diagrams
 
-## Features
+A full-featured web application for creating and managing Mermaid diagrams with real-time preview, cloud storage, and powerful export options.
 
-- **Authentication** - Email/password auth powered by Neon Auth
-- **Database** - PostgreSQL with Neon serverless driver
-- **Row Level Security** - Built-in RLS policies via Drizzle ORM
-- **Type Safety** - Full TypeScript support with inferred types
-- **Modern UI** - Tailwind CSS with reusable components
-- **Edge Deployment** - Ready for Cloudflare Workers
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
+[![Neon](https://img.shields.io/badge/Neon-PostgreSQL-green)](https://neon.tech/)
+[![Mermaid](https://img.shields.io/badge/Mermaid-11-ff3670)](https://mermaid.js.org/)
 
-## Tech Stack
+## ✨ Features
+
+### 🎯 Current Features (Phase 1 - MVP)
+
+- ✅ **Real-time Mermaid Editor** with Monaco Editor integration
+- ✅ **Live Preview** - See your diagrams update as you type
+- ✅ **Cloud Storage** - Save diagrams securely with Neon PostgreSQL
+- ✅ **Export** - Download as PNG, SVG, or copy code
+- ✅ **User Authentication** - Secure login with Neon Auth
+- ✅ **Diagram Management** - Create, edit, delete, and organize diagrams
+- ✅ **All Diagram Types** - Flowcharts, sequence, class, ER, Gantt, and more
+- ✅ **Responsive Design** - Works on desktop and mobile
+
+### 🎨 Supported Diagram Types
+
+- Flowcharts
+- Sequence Diagrams
+- Class Diagrams
+- ER Diagrams
+- Gantt Charts
+- Pie Charts
+- User Journey Maps
+- Mind Maps
+- Git Graphs
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- npm or pnpm
+- Neon Database account ([Get one free](https://neon.tech))
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd mermaid-better
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+
+3. **Set up environment variables**
+
+   Copy `.env.example` to `.env` and fill in your Neon credentials:
+   ```bash
+   cp .env.example .env
+   ```
+
+   Get your Neon credentials from the [Neon Console](https://console.neon.tech):
+   ```env
+   NEXT_PUBLIC_NEON_AUTH_URL=https://your-project.neonauth.region.aws.neon.tech/database/auth
+   NEXT_PUBLIC_NEON_DATA_API_URL=https://your-project.apirest.region.aws.neon.tech/database/rest/v1
+   DATABASE_URL=postgresql://user:password@your-project-pooler.region.aws.neon.tech/database?sslmode=require
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   ```
+
+4. **Set up database**
+   ```bash
+   npm run db:generate
+   npm run db:migrate
+   ```
+
+5. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open your browser**
+
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📖 Usage
+
+### Creating Your First Diagram
+
+1. **Sign up** for an account on the homepage
+2. Click **"New Diagram"** in your dashboard
+3. **Write Mermaid code** in the left editor panel
+4. **See live preview** in the right panel
+5. **Save** your diagram with a title
+
+### Example Mermaid Code
+
+```mermaid
+graph TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> B
+    C --> E[End]
+```
+
+### Exporting Diagrams
+
+From the editor, you can:
+- **Export as PNG** - Perfect for documentation
+- **Export as SVG** - Scalable vector graphics
+- **Copy Code** - Use in your markdown files
+
+## 🏗️ Project Structure
+
+```
+mermaid-better/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── page.tsx           # Landing page
+│   │   ├── editor/            # Editor page
+│   │   ├── dashboard/         # User diagrams list
+│   │   ├── login/             # Auth pages
+│   │   └── api/diagrams/      # REST API
+│   ├── components/
+│   │   ├── mermaid-editor.tsx # Main editor component
+│   │   └── ui/                # Reusable UI components
+│   └── lib/
+│       └── neon/              # Database client & schema
+├── drizzle/                   # Database migrations
+└── public/                    # Static assets
+```
+
+## 🛠️ Tech Stack
 
 | Category | Technology |
 |----------|------------|
-| Framework | Next.js 15 (App Router) |
-| Auth & Data | Neon JS SDK (`@neondatabase/neon-js`) |
-| Database | PostgreSQL (Neon) |
-| ORM | Drizzle ORM |
-| Styling | Tailwind CSS |
-| Deployment | Cloudflare Workers (OpenNext) |
+| **Framework** | Next.js 15 (App Router) |
+| **Language** | TypeScript 5.5 |
+| **Database** | Neon PostgreSQL |
+| **ORM** | Drizzle ORM |
+| **Auth** | Neon Auth (Better Auth) |
+| **Editor** | Monaco Editor |
+| **Diagrams** | Mermaid.js |
+| **Styling** | Tailwind CSS |
+| **Deployment** | Cloudflare Workers (OpenNext) |
 
-## Quick Start
+## 📚 API Reference
 
-### 1. Clone and Install
+### Diagrams API
+
+#### `GET /api/diagrams`
+Get all diagrams for the authenticated user
+
+#### `POST /api/diagrams`
+Create a new diagram
+```json
+{
+  "title": "My Flowchart",
+  "content": "graph TD\nA-->B",
+  "type": "flowchart",
+  "description": "Optional description"
+}
+```
+
+#### `GET /api/diagrams/:id`
+Get a specific diagram by ID
+
+#### `PATCH /api/diagrams/:id`
+Update a diagram
+```json
+{
+  "title": "Updated Title",
+  "content": "graph TD\nA-->B-->C"
+}
+```
+
+#### `DELETE /api/diagrams/:id`
+Delete a diagram
+
+## 🗺️ Roadmap
+
+### Phase 2 - Enhanced Experience (In Planning)
+- [ ] Code auto-completion
+- [ ] Keyboard shortcuts
+- [ ] Multi-tab editing
+- [ ] Code snippets library
+- [ ] Template marketplace
+- [ ] Folders and tags
+- [ ] Search and filtering
+
+### Phase 3 - AI Features
+- [ ] AI diagram generation from text
+- [ ] Smart layout optimization
+- [ ] Code-to-diagram conversion
+
+### Phase 4 - Collaboration
+- [ ] Real-time collaboration
+- [ ] Diagram sharing
+- [ ] Comments and feedback
+- [ ] Team workspaces
+
+### Phase 5 - Enterprise
+- [ ] API access
+- [ ] Integrations (GitHub, Notion, Confluence)
+- [ ] Custom themes
+- [ ] SSO support
+
+See [PHASE_1_COMPLETE.md](./PHASE_1_COMPLETE.md) for detailed feature list.
+
+## 🧪 Development
+
+### Available Scripts
 
 ```bash
-# Clone this template
-npx degit your-username/neon-app-template my-app
-cd my-app
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run format       # Format code with Prettier
 
-# Install dependencies
-pnpm install
+# Database
+npm run db:generate  # Generate migration files
+npm run db:migrate   # Run migrations
+npm run db:push      # Push schema directly
+npm run db:studio    # Open Drizzle Studio
+
+# Cloudflare Workers
+npm run build:worker   # Build for Cloudflare
+npm run deploy:worker  # Deploy to Cloudflare
 ```
 
-### 2. Configure Environment
-
-```bash
-# Copy environment template
-cp .env.example .env
-
-# Edit .env with your Neon credentials
-# Get these from https://console.neon.tech
-```
-
-### 3. Setup Database
-
-```bash
-# Push schema to database
-pnpm db:push
-
-# Or generate and run migrations
-pnpm db:generate
-pnpm db:migrate
-```
-
-### 4. Start Development
-
-```bash
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see your app.
-
-## Project Structure
-
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── page.tsx           # Home (auth redirect)
-│   ├── login/page.tsx     # Login page
-│   ├── register/page.tsx  # Register page
-│   └── dashboard/page.tsx # Protected dashboard
-├── components/            # Reusable components
-│   ├── ui/               # UI primitives (Button, Input, Card, etc.)
-│   └── error-boundary.tsx
-└── lib/
-    └── neon/
-        ├── client.ts      # Neon JS client configuration
-        └── schema.ts      # Drizzle schema with RLS policies
-```
-
-## Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_NEON_AUTH_URL` | Neon Auth endpoint URL | Yes |
-| `NEXT_PUBLIC_NEON_DATA_API_URL` | Neon Data API endpoint URL | Yes |
-| `DATABASE_URL` | PostgreSQL connection string (for migrations) | Yes |
-| `NEXT_PUBLIC_APP_URL` | Your app's public URL | Yes |
-| `NEXT_PUBLIC_APP_NAME` | App name for metadata | No |
-| `NEXT_PUBLIC_APP_DESCRIPTION` | App description for metadata | No |
-
-## Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start development server |
-| `pnpm build` | Build for production |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm format` | Format code with Prettier |
-| `pnpm format:check` | Check code formatting |
-| `pnpm db:push` | Push schema changes to database |
-| `pnpm db:generate` | Generate migration files |
-| `pnpm db:migrate` | Run pending migrations |
-| `pnpm db:studio` | Open Drizzle Studio |
-| `pnpm build:worker` | Build for Cloudflare Workers |
-| `pnpm deploy:worker` | Deploy to Cloudflare Workers |
-
-## Usage Examples
-
-### Authentication
+### Database Schema
 
 ```typescript
-import { neonClient } from '@/lib/neon/client';
-
-// Get current session (React hook)
-const { data: session, isPending } = neonClient.auth.useSession();
-
-// Sign up
-await neonClient.auth.signUp.email({ email, password, name });
-
-// Sign in
-await neonClient.auth.signIn.email({ email, password });
-
-// Sign out
-await neonClient.auth.signOut();
+// diagrams table
+{
+  id: uuid (primary key)
+  userId: text (foreign key)
+  title: varchar(255)
+  content: text (Mermaid code)
+  type: varchar(50) (flowchart, sequence, etc.)
+  description: text (optional)
+  createdAt: timestamp
+  updatedAt: timestamp
+}
 ```
 
-### Database Queries
+## 🤝 Contributing
 
-```typescript
-import { neonClient } from '@/lib/neon/client';
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-// Select all
-const { data, error } = await neonClient.from('todos').select('*');
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-// Select with filter
-const { data } = await neonClient
-  .from('todos')
-  .select('*')
-  .eq('completed', false);
+## 📝 License
 
-// Insert
-const { data } = await neonClient
-  .from('todos')
-  .insert({ title: 'New todo' })
-  .select()
-  .single();
+MIT License - see [LICENSE](LICENSE) file for details
 
-// Update
-const { data } = await neonClient
-  .from('todos')
-  .update({ completed: true })
-  .eq('id', todoId);
+## 🙏 Acknowledgments
 
-// Delete
-await neonClient.from('todos').delete().eq('id', todoId);
-```
+- [Mermaid.js](https://mermaid.js.org/) - Powerful diagramming library
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/) - VS Code's editor
+- [Neon](https://neon.tech/) - Serverless PostgreSQL
+- [Next.js](https://nextjs.org/) - The React Framework
+- [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM
 
-### Drizzle Schema with RLS
+## 📧 Contact
 
-```typescript
-// src/lib/neon/schema.ts
-import { pgTable, uuid, text, boolean } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { authenticatedRole, authUid, crudPolicy } from 'drizzle-orm/neon';
+For questions or support, please open an issue on GitHub.
 
-export const todos = pgTable(
-  'todos',
-  {
-    id: uuid('id').primaryKey().defaultRandom(),
-    userId: text('user_id').notNull().default(sql`auth.user_id()`),
-    title: varchar('title', { length: 255 }).notNull(),
-    completed: boolean('completed').notNull().default(false),
-  },
-  (table) => [
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.userId),
-      modify: authUid(table.userId),
-    }),
-  ]
-);
+---
 
-// Infer types from schema
-export type Todo = typeof todos.$inferSelect;
-export type NewTodo = typeof todos.$inferInsert;
-```
-
-## UI Components
-
-The template includes a set of reusable UI components:
-
-```typescript
-import { Button, Input, Card, CardContent, Spinner } from '@/components/ui';
-
-// Button variants
-<Button variant="primary">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="danger">Danger</Button>
-<Button isLoading>Loading...</Button>
-
-// Input with label and error
-<Input label="Email" error="Invalid email" />
-
-// Card
-<Card>
-  <CardContent>Content here</CardContent>
-</Card>
-```
-
-## Deployment
-
-### Cloudflare Workers
-
-```bash
-# Build for Cloudflare Workers
-pnpm build:worker
-
-# Deploy
-pnpm deploy:worker
-```
-
-### Vercel
-
-This template also works with Vercel out of the box:
-
-```bash
-vercel deploy
-```
-
-## Customization
-
-### Adding New Database Tables
-
-1. Add schema in `src/lib/neon/schema.ts`
-2. Run `pnpm db:push` or `pnpm db:generate && pnpm db:migrate`
-
-### Adding New Pages
-
-Create files in `src/app/` following Next.js App Router conventions.
-
-### Modifying UI Components
-
-Edit components in `src/components/ui/` to match your design system.
-
-## License
-
-MIT
+**Built with ❤️ using Next.js, Mermaid.js, and Neon**

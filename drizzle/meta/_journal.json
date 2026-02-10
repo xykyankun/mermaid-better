@@ -8,6 +8,34 @@
       "when": 1766742084165,
       "tag": "0000_strong_tusk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769509039586,
+      "tag": "0001_goofy_skaar",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769512528186,
+      "tag": "0002_bent_mordo",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1769512940613,
+      "tag": "0003_flaky_namora",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1769513469915,
+      "tag": "0004_orange_zodiak",
+      "breakpoints": true
     }
   ]
 }

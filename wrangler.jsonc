@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   // Change this to your project name
-  "name": "my-neon-app",
+  "name": "mermaid-better",
   "main": ".open-next/worker.js",
   "assets": {
     "directory": ".open-next/assets",
@@ -16,7 +16,7 @@
   "env": {
     // Staging/Test environment
     "test": {
-      "name": "my-neon-app-test",
+      "name": "mermaid-better-test",
       "routes": [
         {
           // Replace with your test domain
@@ -28,7 +28,7 @@
     },
     // Production environment
     "prod": {
-      "name": "my-neon-app",
+      "name": "mermaid-better",
       "routes": [
         {
           // Replace with your production domain
